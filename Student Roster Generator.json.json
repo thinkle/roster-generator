@@ -1,0 +1,40 @@
+{
+    "files": [
+        {
+            "type": "server_js", 
+            "id": "aedb1bb5-d02c-4772-8f37-108f1648f2b7", 
+            "name": "Code"
+        }, 
+        {
+            "type": "server_js", 
+            "id": "027782e8-6095-47dc-8a4f-e1e378d7c80f", 
+            "name": "TableReader"
+        }, 
+        {
+            "type": "server_js", 
+            "id": "30ca38ce-4512-4374-91f1-88421d286a29", 
+            "name": "ConfigurationReader"
+        }, 
+        {
+            "type": "server_js", 
+            "id": "4cd8398b-378e-44fb-85df-267a804580ab", 
+            "name": "LoggingExtras"
+        }, 
+        {
+            "type": "html", 
+            "id": "080f5785-665c-436d-abb9-b8f33e7b48f8", 
+            "name": "Sidebar"
+        }, 
+        {
+            "type": "html", 
+            "id": "60cf7c1f-04fc-4f31-9de5-40472da93d1d", 
+            "name": "Sidebar.js"
+        }, 
+        {
+            "type": "html", 
+            "id": "4d03967e-ac62-4927-81fc-4b1c236f6f50", 
+            "name": "Sidebar.css"
+        }
+    ], 
+    "id": "1m_0nvgztOeFSjT4e4_U9WXcqY6ESdz25DKU0J4I1xHI6f3TUocqpsWij"
+}

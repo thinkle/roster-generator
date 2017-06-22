@@ -1,0 +1,108 @@
+var MyApp = new Vue({
+    el : '#appName',
+    data : {sheetData:[],headers:[],error:'',groupingCol:'ALL',
+	    subgroups : [{name:'All Records',groups:4}],
+            toDealBy : '',
+            dealByColumns : [],
+	   },
+    methods : {
+	
+	
+	loadData : function () {
+	    var self = this;
+	    google.script.run
+		.withSuccessHandler(function (data) {
+		    self.sheetData = data;
+		    self.headers = data[0]
+		    self.getSubgroups();
+		})
+		.withFailureHandler(function (e) {
+		    self.error = e
+		})
+		.getData();
+	},    
+	
+	generateGroups : function () {
+	    console.log('Generating groups!')
+            var self = this;
+            var groupMap = {}
+            if (self.groupingCol!='ALL') {
+		var col = self.groupingCol;
+		self.subgroups.forEach(function (g) {
+		    groupMap[''+g.name]=g.groups
+		});
+            }
+            else {
+		var col = false;
+		groupMap = {'ALL':self.subgroups[0].groups}
+            }
+	    debugGroupMap = groupMap;
+	    console.log('Sending group map: %s',debugGroupMap);
+            google.script.run
+		.withFailureHandler(function (e) {self.error = e;})
+		.distributeStudents(
+		    col,
+		    groupMap,
+		    self.dealByColumns);
+	},
+	
+	
+
+	getSubgroups : function () {
+            var self=this;
+            console.log('Get subgroups for %s',self.groupingCol);
+	    if (self.groupingCol=='ALL') {
+		self.subgroups = [{name:'All Records',groups:4,rows:self.sheetData.length-1}]
+	    }
+	    else {
+		self.subgroups = [];
+		var counts = self.getCounts(self.groupingCol)
+		for (var g in counts) {
+		    self.subgroups.push(
+			{name:g,groups:4,rows:counts[g]}
+		    );
+		}
+	    }
+	},
+
+	getCounts : function (col) {
+	    uniqueVals = {}
+	    this.sheetData.slice(1).forEach(function (row) {
+		if (!uniqueVals[row[col]]) {
+		    uniqueVals[row[col]] = 0
+		}
+		uniqueVals[row[col]]+=1;
+	    });
+	    return uniqueVals
+	},
+
+	moveUpDB : function (db) {
+	    
+	    var i = this.dealByColumns.indexOf(db);
+	    console.log('Moving %s from position %s to %s',db,i,i-1);
+	    this.dealByColumns[i] = this.dealByColumns[i-1];
+	    this.dealByColumns[i-1] = db;
+	    this.dealByColumns.splice(0,0); // trigger vue callback
+	},   
+	moveDownDB : function (db) {
+	    var i = this.dealByColumns.indexOf(db);
+	    this.dealByColumns[i] = this.dealByColumns[i+1]
+	    this.dealByColumns[i+1] = db;
+	    this.dealByColumns.splice(0,0);
+	},
+	
+	
+    },
+});
+
+// Component
+Vue.component('component-template', {
+    name : 'sample-component',
+    props : [],
+    
+    template: '#component-template',
+})
+
+
+
+MyApp.loadData()

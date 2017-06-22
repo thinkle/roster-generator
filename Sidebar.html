@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <base target="_top">
+    <script src="https://unpkg.com/vue/dist/vue.js"></script> <!-- vue -->
+    <link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css"> <!-- add-ons styles -->
+    <style><?!=include( 'Sidebar.css'); ?></style> <!-- style -->
+  </head>
+
+  <body>
+    <!-- Simple Sidebar -->
+    <div id="appName" class="sidebar">
+      <h1>Roster Generator</h1>
+      <button v-on:click="loadData()" class="action">Reload</button>
+      <p>Loaded {{sheetData.length}} rows of data.</p>
+      <div>
+	Break into groups based on 
+	<select v-model="groupingCol" v-on:change="getSubgroups()">
+          <option value="ALL">All Data</option>
+          <option v-for="header in headers" :value="header">{{header}}
+          </option>
+	</select>
+	
+	<table>
+	  <tr><th>Divide into</th><th>groups&nbsp;</th><th>of __</th></tr>
+	  
+	  <tr v-for="sg in subgroups">
+	    
+	    <td>{{sg.name}} <span if="sg.rows">({{sg.rows}} rows)</span></td>
+	    <td> <input style="width:3em" size="2" type="number" min="0" v-model="sg.groups"></td>
+	    <td> {{Math.floor(sg.rows/sg.groups)}}-{{Math.floor(sg.rows/sg.groups)+1}}</td>
+	  </tr>
+	</table>
+	
+      </div>
+      <div>
+	<h3>Deal out evenly based on...</h3>
+	<table>
+	  <tr><td><select v-model="toDealBy">
+		<option v-for="header in headers" :value="header" v-if="dealByColumns.indexOf(header)==-1">{{header}}
+		</option>
+	    </select></td><td>
+	      <button class="action" v-on:click="dealByColumns.push(toDealBy)">+</button></td></tr>
+	</table>
+          <div v-for="(dealBy,idx) in dealByColumns">      
+            <span class="adjustment" v-on:click="dealByColumns.splice(dealByColumns.indexOf(dealBy),1)">-</span>{{dealBy}} 
+            <div class="updown">
+              <span class="adjustment,up" v-if="idx>0" v-on:click="moveUpDB(dealBy)">&#x21E7;</span>
+              <span class="adjustment,down" v-if="idx<(dealByColumns.length-1)" v-on:click="moveDownDB(dealBy)">&#x21E9;</span>
+            </div>
+          </div>
+      </div>
+      
+      <div><button class="red" v-on:click="generateGroups">Create Groups</button></div>
+      <div v-if="error" class="error">
+	Error from google sheets: {{error}}
+      </div>
+    </div>
+
+    <!-- example component -->
+    <script type="text/x-template" id="list-item-template">
+    </script>
+
+
+  </body>
+
+</html>
+<script>
+  <?!=include( 'Sidebar.js'); ?>
+</script>
