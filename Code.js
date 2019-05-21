@@ -9,9 +9,9 @@ function onInstall(e) {
 function onOpen() {
     SpreadsheetApp.getUi() // Or DocumentApp or FormApp.
 	.createMenu('Generate Rosters')
-	.addItem('Show '+NAME, 'showSidebar')
-	.addItem('Test Distribute Students', 'testDistributeStudentsFromSheet')
-	.addItem('Test All','testAll')
+	.addItem('Launch '+NAME, 'showSidebar')
+	//.addItem('Test Distribute Students', 'testDistributeStudentsFromSheet')
+	//.addItem('Test All','testAll')
 	.addToUi();
 }
 
@@ -100,7 +100,6 @@ function buildDataStructure (sortBy, groupings, distributions, sheet) {
 	Logger.log('Val: %s',groupings[groupKey]);
 	var ngroups = groupings[groupKey]
 	Logger.log('Setting up data structure for %s,%s',groupings[groupKey],groupKey);
-	groupKey = ''+groupKey;
 	groups[groupKey] = {};
 	groups[groupKey].distributionChart = {};
 	groups[groupKey].ngroups = ngroups
@@ -109,7 +108,7 @@ function buildDataStructure (sortBy, groupings, distributions, sheet) {
 	for (var i=0;  i<ngroups; i++) {
 	    groups[groupKey].piles.push([]);
 	}
-	Logger.log('==>',JSON.stringify(groups));
+	Logger.log('==>%s',JSON.stringify(groups[groupKey]));
     }
     for (var i=1; i<studentData.length; i++) {
 	var row = studentData[i]
@@ -128,11 +127,13 @@ function buildDataStructure (sortBy, groupings, distributions, sheet) {
 	    }
 	    if (group) {
 		var key = ""
-		distributions.forEach(function (k) {
-		    if (key) { key += '-' }
-		    key += row[k] // build a key -- e.g. gender + sped status
+		if (distributions) {
+		    distributions.forEach(function (k) {
+			if (key) { key += '-' }
+			key += row[k] // build a key -- e.g. gender + sped status
+		    }
+					 ) // end build key...
 		}
-				     ) // end build key...
 		row.key = key
 		//Logger.log('adding row '+key+'to'+JSON.stringify(group));
 		appendToKey(group.distributionChart, key, row)
@@ -146,11 +147,19 @@ function buildDataStructure (sortBy, groupings, distributions, sheet) {
     return groups;
 }
 
-function distributeStudents (sortBy, groupings, distributions, sheet) {
-    Logger.log('We got groups: %s',groupings);
-    for (var g in groupings) {
-	Logger.log('%s => %s',g,groupings[k]);
+function cleanDict (d) {
+    // Clean leading spaces from dictionary keys
+    for (var k in d) {
+	if (k.indexOf && k.indexOf(' ')==0) {
+	    v = d[k]
+	    delete d[k]
+	    d[k.substr(1)] = v;
+	}
     }
+}
+
+function distributeStudents (sortBy, groupings, distributions, sheet) {
+    cleanDict(groupings);
     groups = buildDataStructure(sortBy, groupings, distributions, sheet);
     for (var groupKey in groups) {
 	var group = groups[groupKey];
