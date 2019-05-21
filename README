@@ -1,1 +1,4 @@
-Requires Table Library: https://www.tomhinkle.net/proj/table
+Google Apps Script: I may eventually publish this as an add-on. If I
+don't, you can just create your own add-on and publish in google apps
+script. To do so, you will need to use my Table Library
+(https://www.tomhinkle.net/proj/table)
