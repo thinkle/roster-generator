@@ -7,7 +7,6 @@ var MyApp = new Vue({
 	   },
     methods : {
 	
-	
 	loadData : function () {
 	    var self = this;
 	    google.script.run
@@ -21,23 +20,10 @@ var MyApp = new Vue({
 		})
 		.getData();
 	},    
-	
-	generateGroups : function () {
-	    console.log('Generating groups!')
-            var self = this;
-            var groupMap = {}
-            if (self.groupingCol!='ALL') {
-		var col = self.groupingCol;
-		self.subgroups.forEach(function (g) {
-		    groupMap[''+g.name]=g.groups
-		});
-            }
-            else {
-		var col = false;
-		groupMap = {'ALL':self.subgroups[0].groups}
-            }
-	    debugGroupMap = groupMap;
-	    console.log('Sending group map: %s',debugGroupMap);
+
+	testGen : function () {
+	    var groupMap = {' 2017':4,' 2016':2,' 2018':2,' 2019':4,' 2020':2}
+	    col = 'YOG'
             google.script.run
 		.withFailureHandler(function (e) {self.error = e;})
 		.distributeStudents(
@@ -45,8 +31,28 @@ var MyApp = new Vue({
 		    groupMap,
 		    self.dealByColumns);
 	},
-	
-	
+
+	generateGroups : function () {
+	    console.log('Generating groups!')
+            var self = this;
+            var groupMap = {}
+            if (self.groupingCol!='ALL') {
+		var col = self.groupingCol;
+		self.subgroups.forEach(function (g) {
+		    groupMap[' '+g.name]=g.groups
+		});
+            }
+            else {
+		var col = false;
+		groupMap = {'ALL':self.subgroups[0].groups}
+            }
+            google.script.run
+		.withFailureHandler(function (e) {self.error = e;})
+		.distributeStudents(
+		    col,
+		    groupMap,
+		    self.dealByColumns);
+	},
 
 	getSubgroups : function () {
             var self=this;
