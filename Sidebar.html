@@ -12,7 +12,11 @@
     <!-- Simple Sidebar -->
     <div id="appName" class="sidebar">
       <h1>Roster Generator</h1>
-      <button v-on:click="loadData()" class="action">Reload</button>
+      <button v-on:click="loadData()" class="action">Reload Data</button>
+
+      <button class="red" v-on:click="generateGroups">Create Groups</button>
+      
+      <!--<button v-on:click="testGen()">TEST WTF</button>-->
       <p>Loaded {{sheetData.length}} rows of data.</p>
       <div>
 	Break into groups based on 
@@ -23,13 +27,16 @@
 	</select>
 	
 	<table>
-	  <tr><th>Divide into</th><th>groups&nbsp;</th><th>of __</th></tr>
+	  <!--<tr><th>Divide into</th><th>groups&nbsp;</th><th>of __</th></tr>-->
 	  
 	  <tr v-for="sg in subgroups">
-	    
+	    <!--
 	    <td>{{sg.name}} <span if="sg.rows">({{sg.rows}} rows)</span></td>
 	    <td> <input style="width:3em" size="2" type="number" min="0" v-model="sg.groups"></td>
-	    <td> {{Math.floor(sg.rows/sg.groups)}}-{{Math.floor(sg.rows/sg.groups)+1}}</td>
+	    <td> {{Math.floor(sg.rows/sg.groups)}}-{{Math.floor(sg.rows/sg.groups)+1}}</td>-->
+
+	    <td>Break {{sg.rows}} {{sg.name}} into <input style="width:3em" size="2" type="number" min="0" v-model="sg.groups"> groups of {{Math.floor(sg.rows/sg.groups)}}-{{Math.floor(sg.rows/sg.groups)+1}}</td>
+	    
 	  </tr>
 	</table>
 	
@@ -52,7 +59,7 @@
           </div>
       </div>
       
-      <div><button class="red" v-on:click="generateGroups">Create Groups</button></div>
+      <div></div>
       <div v-if="error" class="error">
 	Error from google sheets: {{error}}
       </div>
